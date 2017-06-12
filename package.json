@@ -1,0 +1,44 @@
+{
+  "name": "lavv-api",
+  "description": "API server for Lavv.",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm run lint",
+    "start": "NODE_ENV=development node index.js",
+    "lint": "eslint etc/**/*.js lib/**/*.js routers/**/*.js test/**/*.js index.js",
+    "db:init": "dropdb lavv; createdb lavv",
+    "db:schema": "psql --dbname=lavv --file=etc/database/schema.sql",
+    "db:data": "NODE_ENV=development node etc/data.js",
+    "db": "npm run db:init && npm run db:schema && npm run db:data",
+    "db:test:init": "dropdb lavv_test; createdb lavv_test",
+    "db:test:schema": "psql --dbname=lavv_test --file=etc/database/schema.sql",
+    "db:test:data": "NODE_ENV=test node etc/data.js",
+    "db:test": "NODE_ENV=test npm run db:test:init && npm run db:test:schema && npm run db:test:data",
+    "pretest": "npm run lint",
+    "test": "npm run db:test && NODE_ENV=test mocha --colors etc/database/*.test.js lib/**/*.test.js routers/**/*.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.4.0",
+    "knex": "^0.13.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "pg": "^6.1.5",
+    "redis": "^2.7.1",
+    "serve-static": "^1.12.2",
+    "uuid": "^3.0.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "mocha": "^3.3.0",
+    "proxyquire": "^1.7.11",
+    "sinon": "^2.2.0"
+  }
+}

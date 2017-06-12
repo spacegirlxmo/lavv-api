@@ -1,0 +1,64 @@
+
+-- DOMAINS
+-----
+CREATE DOMAIN DEFAULT_TEXT TEXT CHECK (
+    LENGTH(VALUE) > 2 AND
+    LENGTH(VALUE) < 200
+);
+
+CREATE DOMAIN NORMALIZED_TEXT TEXT CHECK (
+    LENGTH(VALUE) > 3 AND
+    LENGTH(VALUE) < 200 AND
+    VALUE ~ '^[A-Za-z][A-Za-z0-9-]+$'
+);
+
+CREATE DOMAIN EMAIL TEXT CHECK (
+    LENGTH(VALUE) > 5 AND
+    LENGTH(VALUE) < 200
+);
+
+CREATE DOMAIN PHONE TEXT CHECK (
+    LENGTH(VALUE) > 7 AND
+    LENGTH(VALUE) < 20 AND
+    VALUE ~ '^[+0-9]+$'
+);
+
+CREATE DOMAIN TYPE TEXT CHECK (
+    LENGTH(VALUE) = 1
+);
+
+
+-- TABLES
+-----
+CREATE TABLE "User" (
+    "id" SERIAL PRIMARY KEY,
+    "email" EMAIL UNIQUE,
+    "name" DEFAULT_TEXT,
+    "active" BOOLEAN DEFAULT TRUE,
+    "blockedUsers" INTEGER[],
+    "created" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Token" (
+    "id" TEXT PRIMARY KEY,
+    "userId" INTEGER NOT NULL REFERENCES "User" ("id"),
+    "fbToken" TEXT,
+    "ip" TEXT,
+    "userAgent" TEXT,
+    "appKey" TEXT,
+    "expires" TIMESTAMP,
+    "created" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Bathroom" (
+    "id" SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL REFERENCES "User" ("id"),
+    "placeId" INTEGER NOT NULL REFERENCES "Place" ("id"),
+    "name" DEFAULT_TEXT,
+    "description" TEXT,
+    "active" BOOLEAN DEFAULT TRUE,
+    "created" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
